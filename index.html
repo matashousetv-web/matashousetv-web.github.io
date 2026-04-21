@@ -8,7 +8,14 @@
 <style>
 body {
     margin: 0;
-    background: #000;
+    background: 
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        radial-gradient(circle at center, rgba(255,0,0,0.2), transparent 70%),
+        url("https://matashousetv-web.github.io/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
     color: #eee;
     font-family: Arial, sans-serif;
     display: flex;
@@ -20,11 +27,11 @@ body {
 /* RADIO PANEL */
 .radio {
     width: 430px;
-    height: 340px;
+    height: 350px;
     background: radial-gradient(circle at center, #111 0%, #000 80%);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 0 40px rgba(255,0,0,0.2),
+    box-shadow: 0 0 40px rgba(255,0,0,0.25),
                 inset 0 0 20px rgba(255,0,0,0.1);
 }
 
@@ -33,7 +40,7 @@ body {
     text-align: center;
     font-weight: bold;
     color: #ff2a2a;
-    text-shadow: 0 0 10px #ff2a2a;
+    text-shadow: 0 0 12px #ff2a2a;
 }
 
 /* NOW PLAYING */
@@ -68,6 +75,7 @@ body {
     background: #ff2a2a;
     border-radius: 2px;
     box-shadow: 0 0 10px #ff2a2a;
+    transition: height 0.1s;
 }
 
 /* CONTROLS */
@@ -89,7 +97,7 @@ button {
 }
 
 button:hover {
-    box-shadow: 0 0 20px rgba(255,0,0,0.8);
+    box-shadow: 0 0 20px rgba(255,0,0,0.9);
 }
 
 /* VOLUME */
@@ -141,7 +149,7 @@ input[type=range]::-webkit-slider-thumb {
     </div>
 
     <!-- VISUALIZER -->
-    <div class="visualizer" id="visualizer">
+    <div class="visualizer">
         <div class="bar"></div>
         <div class="bar"></div>
         <div class="bar"></div>
@@ -177,12 +185,14 @@ input[type=range]::-webkit-slider-thumb {
 let vizInterval;
 
 function play() {
-    document.getElementById("player").play();
+    const player = document.getElementById("player");
+    player.play();
     startVisualizer();
 }
 
 function pause() {
-    document.getElementById("player").pause();
+    const player = document.getElementById("player");
+    player.pause();
     stopVisualizer();
 }
 
