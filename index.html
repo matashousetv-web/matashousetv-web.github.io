@@ -8,8 +8,8 @@
 <style>
 body {
     margin: 0;
-    background: #0a0a0a;
-    color: #eaeaea;
+    background: #000;
+    color: #eee;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -17,26 +17,29 @@ body {
     height: 100vh;
 }
 
+/* RADIO PANEL */
 .radio {
-    width: 420px;
-    height: 320px;
-    background: linear-gradient(145deg, #111, #000);
+    width: 430px;
+    height: 340px;
+    background: radial-gradient(circle at center, #111 0%, #000 80%);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.9),
-                inset 0 0 10px rgba(255,255,255,0.05);
+    box-shadow: 0 0 40px rgba(255,0,0,0.2),
+                inset 0 0 20px rgba(255,0,0,0.1);
 }
 
+/* HEADER */
 .title {
     text-align: center;
     font-weight: bold;
-    color: #00aaff;
-    margin-bottom: 10px;
+    color: #ff2a2a;
+    text-shadow: 0 0 10px #ff2a2a;
 }
 
+/* NOW PLAYING */
 .now {
     text-align: center;
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
 .song {
@@ -45,67 +48,78 @@ body {
 }
 
 .artist {
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.6;
 }
 
+/* VISUALIZER */
+.visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+    height: 50px;
+    margin: 10px 0;
+}
+
+.bar {
+    width: 6px;
+    height: 10px;
+    background: #ff2a2a;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #ff2a2a;
+}
+
+/* CONTROLS */
 .controls {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 25px;
 }
 
 button {
     background: #111;
     border: none;
     color: #fff;
-    padding: 10px 15px;
-    border-radius: 10px;
+    padding: 10px 18px;
+    border-radius: 12px;
     cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,0,0,0.3);
     transition: 0.2s;
-    box-shadow: 0 0 10px rgba(0,170,255,0.2);
 }
 
 button:hover {
-    box-shadow: 0 0 15px rgba(0,170,255,0.6);
+    box-shadow: 0 0 20px rgba(255,0,0,0.8);
 }
 
-/* Volume Section */
+/* VOLUME */
 .volume-container {
-    margin-top: 20px;
+    margin-top: 15px;
     text-align: center;
-}
-
-.volume-label {
-    font-size: 12px;
-    opacity: 0.7;
 }
 
 .volume-value {
     font-size: 14px;
-    margin-bottom: 5px;
 }
 
-/* Slider styling */
 input[type=range] {
     -webkit-appearance: none;
     width: 80%;
     height: 6px;
     background: #222;
     border-radius: 5px;
-    outline: none;
 }
 
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 15px;
     height: 15px;
-    background: #00aaff;
+    background: #ff2a2a;
     border-radius: 50%;
-    box-shadow: 0 0 10px #00aaff;
-    cursor: pointer;
+    box-shadow: 0 0 12px #ff2a2a;
 }
 
+/* FOOTER */
 .footer {
     text-align: center;
     margin-top: 10px;
@@ -126,15 +140,26 @@ input[type=range]::-webkit-slider-thumb {
         <div class="artist">Self Made 6 Years Deep In The Game!</div>
     </div>
 
+    <!-- VISUALIZER -->
+    <div class="visualizer" id="visualizer">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+
     <div class="controls">
         <button onclick="play()">▶</button>
         <button onclick="pause()">⏸</button>
     </div>
 
-    <!-- Volume Section -->
+    <!-- VOLUME -->
     <div class="volume-container">
         <div class="volume-value" id="volDisplay">Volume: 100%</div>
-        <input type="range" id="volume" min="0" max="1" step="0.01" value="1"
+        <input type="range" min="0" max="1" step="0.01" value="1"
                oninput="setVolume(this.value)">
     </div>
 
@@ -149,21 +174,43 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 <script>
+let vizInterval;
+
 function play() {
     document.getElementById("player").play();
+    startVisualizer();
 }
 
 function pause() {
     document.getElementById("player").pause();
+    stopVisualizer();
 }
 
 function setVolume(val) {
     const player = document.getElementById("player");
     player.volume = val;
 
-    // Update display (0–1 → 0–100%)
     let percent = Math.round(val * 100);
     document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
+}
+
+/* VISUALIZER */
+function startVisualizer() {
+    const bars = document.querySelectorAll(".bar");
+
+    vizInterval = setInterval(() => {
+        bars.forEach(bar => {
+            let height = Math.random() * 45 + 5;
+            bar.style.height = height + "px";
+        });
+    }, 100);
+}
+
+function stopVisualizer() {
+    clearInterval(vizInterval);
+    document.querySelectorAll(".bar").forEach(bar => {
+        bar.style.height = "10px";
+    });
 }
 </script>
 
