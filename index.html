@@ -17,10 +17,9 @@ body {
     height: 100vh;
 }
 
-/* Main radio panel */
 .radio {
     width: 420px;
-    height: 280px;
+    height: 320px;
     background: linear-gradient(145deg, #111, #000);
     border-radius: 20px;
     padding: 20px;
@@ -28,7 +27,6 @@ body {
                 inset 0 0 10px rgba(255,255,255,0.05);
 }
 
-/* Header */
 .title {
     text-align: center;
     font-weight: bold;
@@ -36,7 +34,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* Now playing section */
 .now {
     text-align: center;
     margin: 20px 0;
@@ -52,7 +49,6 @@ body {
     opacity: 0.6;
 }
 
-/* Controls */
 .controls {
     display: flex;
     justify-content: center;
@@ -74,10 +70,45 @@ button:hover {
     box-shadow: 0 0 15px rgba(0,170,255,0.6);
 }
 
-/* Footer branding */
+/* Volume Section */
+.volume-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.volume-label {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.volume-value {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* Slider styling */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 6px;
+    background: #222;
+    border-radius: 5px;
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #00aaff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00aaff;
+    cursor: pointer;
+}
+
 .footer {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 12px;
     opacity: 0.5;
 }
@@ -100,6 +131,13 @@ button:hover {
         <button onclick="pause()">⏸</button>
     </div>
 
+    <!-- Volume Section -->
+    <div class="volume-container">
+        <div class="volume-value" id="volDisplay">Volume: 100%</div>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1"
+               oninput="setVolume(this.value)">
+    </div>
+
     <audio id="player">
         <source src="http://stream.zeno.fm/cmqbv5vff0hvv" type="audio/mpeg">
     </audio>
@@ -117,6 +155,15 @@ function play() {
 
 function pause() {
     document.getElementById("player").pause();
+}
+
+function setVolume(val) {
+    const player = document.getElementById("player");
+    player.volume = val;
+
+    // Update display (0–1 → 0–100%)
+    let percent = Math.round(val * 100);
+    document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
 }
 </script>
 
