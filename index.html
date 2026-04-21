@@ -1,30 +1,124 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Romin Baxter Was Here!</title>
-</head>
-<body>
-  <h1>AKA Script Daddy</h1>
-  <p>In the works🎉</p>
-</body>
-</html>
-
-
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My Radio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baxter Bikes Radio</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #eaeaea;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main radio panel */
+.radio {
+    width: 420px;
+    height: 280px;
+    background: linear-gradient(145deg, #111, #000);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.9),
+                inset 0 0 10px rgba(255,255,255,0.05);
+}
+
+/* Header */
+.title {
+    text-align: center;
+    font-weight: bold;
+    color: #00aaff;
+    margin-bottom: 10px;
+}
+
+/* Now playing section */
+.now {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.song {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.artist {
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+button {
+    background: #111;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 0 10px rgba(0,170,255,0.2);
+}
+
+button:hover {
+    box-shadow: 0 0 15px rgba(0,170,255,0.6);
+}
+
+/* Footer branding */
+.footer {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 12px;
+    opacity: 0.5;
+}
+</style>
 </head>
-<body style="background:#111;color:#fff;text-align:center;font-family:sans-serif;">
 
-<h1>🔥 My Radio Stream</h1>
+<body>
 
-<audio controls autoplay>
-  <source src="http://stream.zeno.fm/cmqbv5vff0hvv" type="audio/mpeg">
-  Your browser does not support audio.
-</audio>
+<div class="radio">
+
+    <div class="title">🔥 BAXTER BIKES RADIO 🔥</div>
+
+    <div class="now">
+        <div class="song">Auto DJ Live</div>
+        <div class="artist">Zeno Stream</div>
+    </div>
+
+    <div class="controls">
+        <button onclick="play()">▶</button>
+        <button onclick="pause()">⏸</button>
+    </div>
+
+    <audio id="player">
+        <source src="http://stream.zeno.fm/cmqbv5vff0hvv" type="audio/mpeg">
+    </audio>
+
+    <div class="footer">
+        AKA Script Daddy Romin 😎
+    </div>
+
+</div>
+
+<script>
+function play() {
+    document.getElementById("player").play();
+}
+
+function pause() {
+    document.getElementById("player").pause();
+}
+</script>
 
 </body>
 </html>
