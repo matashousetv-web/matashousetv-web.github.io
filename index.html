@@ -129,7 +129,6 @@ button:hover {
     box-shadow: 0 0 20px rgba(255,0,0,0.9);
 }
 
-/* MUTE ACTIVE */
 #muteBtn.active {
     box-shadow: 0 0 20px rgba(255,0,0,1);
 }
@@ -173,7 +172,6 @@ input[type=range]::-webkit-slider-thumb {
 
 <body>
 
-<!-- BOOT SCREEN -->
 <div id="bootScreen">
   <div class="bootLogo">BAXTER SYSTEM</div>
   <div class="bootSub" id="bootText">Initializing Audio Interface...</div>
@@ -218,30 +216,23 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 <script>
-let vizInterval;
+let vizInterval = null;
+const player = document.getElementById("player");
 
-/* PLAYER CONTROLS */
-function play() {
-    const player = document.getElementById("player");
-    player.play();
-    startVisualizer();
-}
+/* AUDIO SYNC */
+player.addEventListener("play", startVisualizer);
+player.addEventListener("pause", stopVisualizer);
+player.addEventListener("ended", stopVisualizer);
 
-function pause() {
-    const player = document.getElementById("player");
-    player.pause();
-    stopVisualizer();
-}
-
+/* CONTROLS */
+function play() { player.play(); }
+function pause() { player.pause(); }
 function stop() {
-    const player = document.getElementById("player");
     player.pause();
     player.currentTime = 0;
-    stopVisualizer();
 }
 
 function toggleMute() {
-    const player = document.getElementById("player");
     const btn = document.getElementById("muteBtn");
 
     player.muted = !player.muted;
@@ -256,7 +247,6 @@ function toggleMute() {
 }
 
 function setVolume(val) {
-    const player = document.getElementById("player");
     player.volume = val;
 
     let percent = Math.round(val * 100);
@@ -268,24 +258,29 @@ function setVolume(val) {
 
 /* VISUALIZER */
 function startVisualizer() {
+    if (vizInterval) return;
+
     const bars = document.querySelectorAll(".bar");
 
     vizInterval = setInterval(() => {
         bars.forEach(bar => {
-            let height = Math.random() * 45 + 5;
-            bar.style.height = height + "px";
+            bar.style.height = (Math.random() * 45 + 5) + "px";
         });
     }, 100);
 }
 
 function stopVisualizer() {
-    clearInterval(vizInterval);
+    if (vizInterval) {
+        clearInterval(vizInterval);
+        vizInterval = null;
+    }
+
     document.querySelectorAll(".bar").forEach(bar => {
         bar.style.height = "10px";
     });
 }
 
-/* BOOT SCREEN LOGIC */
+/* BOOT TEXT */
 let bootLines = [
     "Initializing Audio Interface...",
     "Connecting to Stream...",
