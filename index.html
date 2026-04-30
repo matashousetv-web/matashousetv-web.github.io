@@ -45,7 +45,13 @@ body {
     background: radial-gradient(circle at center, #111 0%, #000 80%);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 0 40px rgba(255,0,0,0.25);
+
+    /* 🔥 default glow */
+    box-shadow: 0 0 20px rgba(255,0,0,0.4),
+                inset 0 0 20px rgba(255,0,0,0.2);
+
+    /* 🔥 smooth glow animation */
+    transition: box-shadow 0.2s ease;
 }
 
 .title {
@@ -53,7 +59,7 @@ body {
     color: red;
 }
 
-/* VISUALIZER FIXED */
+/* VISUALIZER */
 .visualizer {
     display: flex;
     justify-content: center;
@@ -144,19 +150,13 @@ button:hover {
 <button onclick="toggleMute()" id="muteBtn">🔊</button>
 </div>
 
-<!-- PRESETS -->
 <div class="presets">
-<button class="preset" onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv')">BAXTER</button>
-
-<button class="preset" onclick="setStation('https://s6-webradio.rockantenne.de/rockantenne')">ROCK</button>
-
-<button class="preset" onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal')">METAL</button>
-
-<button class="preset" onclick="setStation('http://listen.181fm.com/181-realcountry_128k.mp3')">COUNTRY</button>
-
-<button class="preset" onclick="setStation('https://listen.181fm.com/181-beat_128k.mp3')">R&B</button>
-
-<button class="preset" onclick="setStation('https://listen.181fm.com/181-eagle_128k.mp3')">ALT</button>
+<button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv')">BAXTER</button>
+<button onclick="setStation('https://s6-webradio.rockantenne.de/rockantenne')">ROCK</button>
+<button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal')">METAL</button>
+<button onclick="setStation('http://listen.181fm.com/181-realcountry_128k.mp3')">COUNTRY</button>
+<button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3')">R&B</button>
+<button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/KYSRFM.mp3')">ALT</button>
 </div>
 
 <div class="volume-container">
@@ -177,7 +177,6 @@ const player = document.getElementById("player");
 /* SYNC */
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
-player.addEventListener("ended", stopVisualizer);
 
 /* CONTROLS */
 function play(){ player.play(); }
@@ -192,9 +191,18 @@ function toggleMute(){
     document.getElementById("muteBtn").classList.toggle("active");
 }
 
+/* 🔥 GLOW FIXED HERE */
 function setVolume(val){
     player.volume = val;
-    document.getElementById("volDisplay").innerText = "Volume: " + Math.round(val*100)+"%";
+
+    let percent = Math.round(val * 100);
+    document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
+
+    const radio = document.querySelector(".radio");
+
+    radio.style.boxShadow =
+        "0 0 " + (val * 60) + "px rgba(255,0,0,0.9), " +
+        "inset 0 0 25px rgba(255,0,0,0.4)";
 }
 
 /* STATION SWITCH */
