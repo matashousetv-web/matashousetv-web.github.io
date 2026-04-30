@@ -31,23 +31,18 @@ body {
     height: 100%;
     background: black;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 999;
     color: #ff2a2a;
-    transition: opacity 0.5s ease;
-}
-
-.bootLogo {
-    font-size: 26px;
-    text-shadow: 0 0 15px #ff2a2a;
+    font-size: 24px;
+    text-shadow: 0 0 15px red;
 }
 
 /* RADIO PANEL */
 .radio {
-    width: 450px;
-    height: 420px;
+    width: 460px;
+    height: 440px;
     background: radial-gradient(circle at center, #111 0%, #000 80%);
     border-radius: 20px;
     padding: 20px;
@@ -58,22 +53,26 @@ body {
 .title {
     text-align: center;
     color: #ff2a2a;
-    text-shadow: 0 0 10px #ff2a2a;
+    text-shadow: 0 0 12px red;
 }
 
 /* VISUALIZER */
 .visualizer {
     display: flex;
     justify-content: center;
-    gap: 4px;
-    height: 50px;
-    margin: 10px 0;
+    align-items: flex-end;
+    gap: 6px;
+    height: 65px;
+    margin: 15px 0;
 }
 
 .bar {
-    width: 6px;
-    background: #ff2a2a;
-    box-shadow: 0 0 10px red;
+    width: 12px;
+    height: 10px;
+    background: linear-gradient(to top, #ff0000, #ff4d4d);
+    border-radius: 3px;
+    box-shadow: 0 0 15px red;
+    transition: height 0.1s;
 }
 
 /* CONTROLS */
@@ -134,9 +133,7 @@ input[type=range] {
 
 <body>
 
-<div id="bootScreen">
-  <div class="bootLogo">BAXTER SYSTEM</div>
-</div>
+<div id="bootScreen">BAXTER SYSTEM</div>
 
 <div class="radio">
 
@@ -145,6 +142,7 @@ input[type=range] {
 <div class="visualizer">
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+<div class="bar"></div><div class="bar"></div>
 </div>
 
 <div class="controls">
@@ -154,14 +152,19 @@ input[type=range] {
 <button onclick="toggleMute()" id="muteBtn">🔊</button>
 </div>
 
-<!-- PRESET BUTTONS -->
+<!-- PRESETS -->
 <div class="presets">
 <button class="preset" onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv')">BAXTER</button>
-<button class="preset" onclick="setStation('https://stream.radioparadise.com/aac-320')">ROCK</button>
-<button class="preset" onclick="setStation('http://stream.antenne.de:80/heavy-metal')">METAL</button>
+
+<button class="preset" onclick="setStation('https://s6-webradio.rockantenne.de/rockantenne')">ROCK</button>
+
+<button class="preset" onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal')">METAL</button>
+
 <button class="preset" onclick="setStation('http://listen.181fm.com/181-realcountry_128k.mp3')">COUNTRY</button>
+
 <button class="preset" onclick="setStation('https://stream.rm.fm/rnb')">R&B</button>
-<button class="preset" onclick="setStation('http://radio.streemlion.com:4200/stream')">ALT ROCK</button>
+
+<button class="preset" onclick="setStation('http://stream.radiobob.de/rock/mp3-192')">ALT</button>
 </div>
 
 <div class="volume-container">
@@ -179,59 +182,63 @@ input[type=range] {
 let vizInterval = null;
 const player = document.getElementById("player");
 
-/* VISUALIZER SYNC */
+/* SYNC VISUALIZER */
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
+player.addEventListener("ended", stopVisualizer);
 
 /* CONTROLS */
 function play(){ player.play(); }
 function pause(){ player.pause(); }
 function stop(){
-player.pause();
-player.currentTime = 0;
+    player.pause();
+    player.currentTime = 0;
 }
 
 function toggleMute(){
-player.muted = !player.muted;
-document.getElementById("muteBtn").classList.toggle("active");
+    player.muted = !player.muted;
+    document.getElementById("muteBtn").classList.toggle("active");
 }
 
 function setVolume(val){
-player.volume = val;
-document.getElementById("volDisplay").innerText = "Volume: " + Math.round(val*100)+"%";
+    player.volume = val;
+    document.getElementById("volDisplay").innerText = "Volume: " + Math.round(val*100)+"%";
+
+    document.querySelector(".radio").style.boxShadow =
+        "0 0 " + (val * 40) + "px rgba(255,0,0,0.8)";
 }
 
 /* CHANGE STATION */
 function setStation(url){
-player.src = url;
-player.play();
+    player.src = url;
+    player.play();
 }
 
 /* VISUALIZER */
 function startVisualizer(){
-if(vizInterval) return;
+    if(vizInterval) return;
 
-const bars = document.querySelectorAll(".bar");
+    const bars = document.querySelectorAll(".bar");
 
-vizInterval = setInterval(()=>{
-bars.forEach(bar=>{
-bar.style.height = (Math.random()*40+5)+"px";
-});
-},100);
+    vizInterval = setInterval(()=>{
+        bars.forEach(bar=>{
+            bar.style.height = (Math.random()*55+5)+"px";
+        });
+    },100);
 }
 
 function stopVisualizer(){
-clearInterval(vizInterval);
-vizInterval = null;
+    clearInterval(vizInterval);
+    vizInterval = null;
 
-document.querySelectorAll(".bar").forEach(bar=>{
-bar.style.height = "10px";
-});
+    document.querySelectorAll(".bar").forEach(bar=>{
+        bar.style.height = "10px";
+    });
 }
 
-/* BOOT SCREEN */
+/* BOOT */
 setTimeout(()=>{
-document.getElementById("bootScreen").style.display="none";
+    document.getElementById("bootScreen").style.display="none";
 },2000);
 </script>
 
