@@ -36,63 +36,35 @@ body {
     align-items: center;
     z-index: 999;
     color: #ff2a2a;
-    text-align: center;
     transition: opacity 0.5s ease;
 }
 
 .bootLogo {
     font-size: 26px;
-    font-weight: bold;
     text-shadow: 0 0 15px #ff2a2a;
-    letter-spacing: 2px;
-}
-
-.bootSub {
-    font-size: 12px;
-    opacity: 0.6;
-    margin-top: 10px;
 }
 
 /* RADIO PANEL */
 .radio {
-    width: 430px;
-    height: 360px;
+    width: 450px;
+    height: 420px;
     background: radial-gradient(circle at center, #111 0%, #000 80%);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 0 40px rgba(255,0,0,0.25),
-                inset 0 0 20px rgba(255,0,0,0.1);
+    box-shadow: 0 0 40px rgba(255,0,0,0.25);
 }
 
-/* HEADER */
+/* TITLE */
 .title {
     text-align: center;
-    font-weight: bold;
     color: #ff2a2a;
-    text-shadow: 0 0 12px #ff2a2a;
-}
-
-/* NOW PLAYING */
-.now {
-    text-align: center;
-    margin: 15px 0;
-}
-
-.song {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.artist {
-    font-size: 13px;
-    opacity: 0.6;
+    text-shadow: 0 0 10px #ff2a2a;
 }
 
 /* VISUALIZER */
 .visualizer {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
     gap: 4px;
     height: 50px;
     margin: 10px 0;
@@ -100,71 +72,61 @@ body {
 
 .bar {
     width: 6px;
-    height: 10px;
     background: #ff2a2a;
-    border-radius: 2px;
-    box-shadow: 0 0 10px #ff2a2a;
-    transition: height 0.1s;
+    box-shadow: 0 0 10px red;
 }
 
 /* CONTROLS */
 .controls {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
 }
 
 button {
     background: #111;
     border: none;
     color: #fff;
-    padding: 10px 14px;
-    border-radius: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(255,0,0,0.3);
-    transition: 0.2s;
 }
 
 button:hover {
-    box-shadow: 0 0 20px rgba(255,0,0,0.9);
+    box-shadow: 0 0 15px red;
 }
 
 #muteBtn.active {
-    box-shadow: 0 0 20px rgba(255,0,0,1);
+    box-shadow: 0 0 20px red;
+}
+
+/* PRESETS */
+.presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.preset {
+    font-size: 11px;
+    padding: 8px;
 }
 
 /* VOLUME */
 .volume-container {
-    margin-top: 15px;
     text-align: center;
-}
-
-.volume-value {
-    font-size: 14px;
+    margin-top: 10px;
 }
 
 input[type=range] {
-    -webkit-appearance: none;
     width: 80%;
-    height: 6px;
-    background: #222;
-    border-radius: 5px;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
-    background: #ff2a2a;
-    border-radius: 50%;
-    box-shadow: 0 0 12px #ff2a2a;
 }
 
 /* FOOTER */
 .footer {
     text-align: center;
-    margin-top: 10px;
-    font-size: 12px;
+    font-size: 11px;
     opacity: 0.5;
 }
 </style>
@@ -174,44 +136,42 @@ input[type=range]::-webkit-slider-thumb {
 
 <div id="bootScreen">
   <div class="bootLogo">BAXTER SYSTEM</div>
-  <div class="bootSub" id="bootText">Initializing Audio Interface...</div>
 </div>
 
 <div class="radio">
 
-    <div class="title">🔥 BAXTER BIKES RADIO 🔥</div>
+<div class="title">🔥 BAXTER RADIO 🔥</div>
 
-    <div class="now">
-        <div class="song">Built Not Bought</div>
-        <div class="artist">Self Made 6 Years Deep In The Game!</div>
-    </div>
+<div class="visualizer">
+<div class="bar"></div><div class="bar"></div><div class="bar"></div>
+<div class="bar"></div><div class="bar"></div><div class="bar"></div>
+</div>
 
-    <div class="visualizer">
-        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        <div class="bar"></div>
-    </div>
+<div class="controls">
+<button onclick="play()">▶</button>
+<button onclick="pause()">⏸</button>
+<button onclick="stop()">⏹</button>
+<button onclick="toggleMute()" id="muteBtn">🔊</button>
+</div>
 
-    <div class="controls">
-        <button onclick="play()">▶</button>
-        <button onclick="pause()">⏸</button>
-        <button onclick="stop()">⏹</button>
-        <button onclick="toggleMute()" id="muteBtn">🔊</button>
-    </div>
+<!-- PRESET BUTTONS -->
+<div class="presets">
+<button class="preset" onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv')">BAXTER</button>
+<button class="preset" onclick="setStation('https://stream.radioparadise.com/aac-320')">ROCK</button>
+<button class="preset" onclick="setStation('http://stream.antenne.de:80/heavy-metal')">METAL</button>
+<button class="preset" onclick="setStation('http://listen.181fm.com/181-realcountry_128k.mp3')">COUNTRY</button>
+<button class="preset" onclick="setStation('https://stream.rm.fm/rnb')">R&B</button>
+<button class="preset" onclick="setStation('http://radio.streemlion.com:4200/stream')">ALT ROCK</button>
+</div>
 
-    <div class="volume-container">
-        <div class="volume-value" id="volDisplay">Volume: 100%</div>
-        <input type="range" min="0" max="1" step="0.01" value="1"
-               oninput="setVolume(this.value)">
-    </div>
+<div class="volume-container">
+<div id="volDisplay">Volume: 100%</div>
+<input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+</div>
 
-    <audio id="player">
-        <source src="http://stream.zeno.fm/cmqbv5vff0hvv" type="audio/mpeg">
-    </audio>
+<audio id="player" src="http://stream.zeno.fm/cmqbv5vff0hvv"></audio>
 
-    <div class="footer">
-        AKA Script Daddy Romin 😎
-    </div>
+<div class="footer">Script Daddy Romin 😎</div>
 
 </div>
 
@@ -219,88 +179,60 @@ input[type=range]::-webkit-slider-thumb {
 let vizInterval = null;
 const player = document.getElementById("player");
 
-/* AUDIO SYNC */
+/* VISUALIZER SYNC */
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
-player.addEventListener("ended", stopVisualizer);
 
 /* CONTROLS */
-function play() { player.play(); }
-function pause() { player.pause(); }
-function stop() {
-    player.pause();
-    player.currentTime = 0;
+function play(){ player.play(); }
+function pause(){ player.pause(); }
+function stop(){
+player.pause();
+player.currentTime = 0;
 }
 
-function toggleMute() {
-    const btn = document.getElementById("muteBtn");
-
-    player.muted = !player.muted;
-
-    if (player.muted) {
-        btn.innerText = "🔇";
-        btn.classList.add("active");
-    } else {
-        btn.innerText = "🔊";
-        btn.classList.remove("active");
-    }
+function toggleMute(){
+player.muted = !player.muted;
+document.getElementById("muteBtn").classList.toggle("active");
 }
 
-function setVolume(val) {
-    player.volume = val;
+function setVolume(val){
+player.volume = val;
+document.getElementById("volDisplay").innerText = "Volume: " + Math.round(val*100)+"%";
+}
 
-    let percent = Math.round(val * 100);
-    document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
-
-    document.querySelector(".radio").style.boxShadow =
-        "0 0 " + (val * 40) + "px rgba(255,0,0,0.8)";
+/* CHANGE STATION */
+function setStation(url){
+player.src = url;
+player.play();
 }
 
 /* VISUALIZER */
-function startVisualizer() {
-    if (vizInterval) return;
+function startVisualizer(){
+if(vizInterval) return;
 
-    const bars = document.querySelectorAll(".bar");
+const bars = document.querySelectorAll(".bar");
 
-    vizInterval = setInterval(() => {
-        bars.forEach(bar => {
-            bar.style.height = (Math.random() * 45 + 5) + "px";
-        });
-    }, 100);
+vizInterval = setInterval(()=>{
+bars.forEach(bar=>{
+bar.style.height = (Math.random()*40+5)+"px";
+});
+},100);
 }
 
-function stopVisualizer() {
-    if (vizInterval) {
-        clearInterval(vizInterval);
-        vizInterval = null;
-    }
+function stopVisualizer(){
+clearInterval(vizInterval);
+vizInterval = null;
 
-    document.querySelectorAll(".bar").forEach(bar => {
-        bar.style.height = "10px";
-    });
+document.querySelectorAll(".bar").forEach(bar=>{
+bar.style.height = "10px";
+});
 }
 
-/* BOOT TEXT */
-let bootLines = [
-    "Initializing Audio Interface...",
-    "Connecting to Stream...",
-    "Loading UI Modules..."
-];
-
-let i = 0;
-setInterval(() => {
-    document.getElementById("bootText").innerText = bootLines[i % bootLines.length];
-    i++;
-}, 700);
-
-setTimeout(() => {
-    const boot = document.getElementById("bootScreen");
-    boot.style.opacity = "0";
-
-    setTimeout(() => {
-        boot.style.display = "none";
-    }, 500);
-}, 2500);
+/* BOOT SCREEN */
+setTimeout(()=>{
+document.getElementById("bootScreen").style.display="none";
+},2000);
 </script>
 
 </body>
