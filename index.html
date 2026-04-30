@@ -46,15 +46,16 @@ body {
     border-radius: 20px;
     padding: 20px;
 
-    box-shadow: 0 0 20px rgba(255,0,0,0.4),
-                inset 0 0 20px rgba(255,0,0,0.2);
+    box-shadow: 0 0 20px red,
+                inset 0 0 20px red;
 
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .title {
     text-align: center;
     color: red;
+    transition: color 0.3s ease;
 }
 
 /* VISUALIZER */
@@ -70,9 +71,10 @@ body {
 .bar {
     width: 14px;
     min-height: 10px;
-    background: linear-gradient(to top, #ff0000, #ff4d4d);
+    background: red;
     border-radius: 4px;
     box-shadow: 0 0 20px red;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
 /* CONTROLS */
@@ -92,11 +94,11 @@ button {
 }
 
 button:hover {
-    box-shadow: 0 0 15px red;
+    box-shadow: 0 0 15px currentColor;
 }
 
 #muteBtn.active {
-    box-shadow: 0 0 20px red;
+    box-shadow: 0 0 20px currentColor;
 }
 
 /* PRESETS */
@@ -105,11 +107,6 @@ button:hover {
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     margin-top: 15px;
-}
-
-.preset {
-    font-size: 11px;
-    padding: 8px;
 }
 
 /* VOLUME */
@@ -148,19 +145,19 @@ button:hover {
 <button onclick="toggleMute()" id="muteBtn">🔊</button>
 </div>
 
-<!-- PRESETS -->
+<!-- PRESETS WITH COLORS -->
 <div class="presets">
-<button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv')">BAXTER</button>
+<button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','red')">BAXTER</button>
 
-<button onclick="setStation('https://s6-webradio.rockantenne.de/rockantenne')">ROCK</button>
+<button onclick="setStation('https://s6-webradio.rockantenne.de/rockantenne','red')">ROCK</button>
 
-<button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal')">METAL</button>
+<button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal','orange')">METAL</button>
 
-<button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3')">COUNTRY</button>
+<button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green')">COUNTRY</button>
 
-<button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3')">R&B</button>
+<button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue')">R&B</button>
 
-<button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3')">ALT</button>
+<button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple')">ALT</button>
 </div>
 
 <div class="volume-container">
@@ -176,6 +173,7 @@ button:hover {
 
 <script>
 let vizInterval = null;
+let currentColor = "red";
 const player = document.getElementById("player");
 
 /* SYNC */
@@ -195,6 +193,33 @@ function toggleMute(){
     document.getElementById("muteBtn").classList.toggle("active");
 }
 
+/* STATION + COLOR */
+function setStation(url, color){
+    player.src = url;
+    player.play();
+
+    currentColor = color;
+    applyTheme(color);
+}
+
+/* THEME SYSTEM */
+function applyTheme(color){
+    const radio = document.querySelector(".radio");
+    const bars = document.querySelectorAll(".bar");
+    const title = document.querySelector(".title");
+
+    radio.style.boxShadow =
+        "0 0 40px " + color + ", inset 0 0 20px " + color;
+
+    title.style.color = color;
+
+    bars.forEach(bar => {
+        bar.style.background = color;
+        bar.style.boxShadow = "0 0 15px " + color;
+    });
+}
+
+/* VOLUME */
 function setVolume(val){
     player.volume = val;
 
@@ -202,15 +227,10 @@ function setVolume(val){
     document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
 
     const radio = document.querySelector(".radio");
-    radio.style.boxShadow =
-        "0 0 " + (val * 60) + "px rgba(255,0,0,0.9), " +
-        "inset 0 0 25px rgba(255,0,0,0.4)";
-}
 
-/* STATION SWITCH */
-function setStation(url){
-    player.src = url;
-    player.play();
+    radio.style.boxShadow =
+        "0 0 " + (val * 60) + "px " + currentColor +
+        ", inset 0 0 25px " + currentColor;
 }
 
 /* VISUALIZER */
