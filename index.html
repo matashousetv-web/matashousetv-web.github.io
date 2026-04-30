@@ -24,7 +24,7 @@ body {
     height: 100vh;
 }
 
-/* BOOT SCREEN */
+/* BOOT */
 #bootScreen {
     position: fixed;
     width: 100%;
@@ -34,12 +34,11 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 999;
-    color: #ff2a2a;
+    color: red;
     font-size: 24px;
-    text-shadow: 0 0 15px red;
 }
 
-/* RADIO PANEL */
+/* RADIO */
 .radio {
     width: 460px;
     height: 440px;
@@ -49,30 +48,27 @@ body {
     box-shadow: 0 0 40px rgba(255,0,0,0.25);
 }
 
-/* TITLE */
 .title {
     text-align: center;
-    color: #ff2a2a;
-    text-shadow: 0 0 12px red;
+    color: red;
 }
 
-/* VISUALIZER */
+/* VISUALIZER FIXED */
 .visualizer {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 6px;
-    height: 65px;
-    margin: 15px 0;
+    gap: 10px;
+    height: 80px;
+    margin: 20px 0;
 }
 
 .bar {
-    width: 12px;
-    height: 10px;
+    width: 14px;
+    min-height: 10px;
     background: linear-gradient(to top, #ff0000, #ff4d4d);
-    border-radius: 3px;
-    box-shadow: 0 0 15px red;
-    transition: height 0.1s;
+    border-radius: 4px;
+    box-shadow: 0 0 20px red;
 }
 
 /* CONTROLS */
@@ -85,7 +81,7 @@ body {
 button {
     background: #111;
     border: none;
-    color: #fff;
+    color: white;
     padding: 8px 12px;
     border-radius: 10px;
     cursor: pointer;
@@ -116,10 +112,6 @@ button:hover {
 .volume-container {
     text-align: center;
     margin-top: 10px;
-}
-
-input[type=range] {
-    width: 80%;
 }
 
 /* FOOTER */
@@ -162,9 +154,9 @@ input[type=range] {
 
 <button class="preset" onclick="setStation('http://listen.181fm.com/181-realcountry_128k.mp3')">COUNTRY</button>
 
-<button class="preset" onclick="setStation('https://stream.rm.fm/rnb')">R&B</button>
+<button class="preset" onclick="setStation('https://listen.181fm.com/181-beat_128k.mp3')">R&B</button>
 
-<button class="preset" onclick="setStation('http://stream.radiobob.de/rock/mp3-192')">ALT</button>
+<button class="preset" onclick="setStation('https://listen.181fm.com/181-eagle_128k.mp3')">ALT</button>
 </div>
 
 <div class="volume-container">
@@ -182,7 +174,7 @@ input[type=range] {
 let vizInterval = null;
 const player = document.getElementById("player");
 
-/* SYNC VISUALIZER */
+/* SYNC */
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
 player.addEventListener("ended", stopVisualizer);
@@ -203,12 +195,9 @@ function toggleMute(){
 function setVolume(val){
     player.volume = val;
     document.getElementById("volDisplay").innerText = "Volume: " + Math.round(val*100)+"%";
-
-    document.querySelector(".radio").style.boxShadow =
-        "0 0 " + (val * 40) + "px rgba(255,0,0,0.8)";
 }
 
-/* CHANGE STATION */
+/* STATION SWITCH */
 function setStation(url){
     player.src = url;
     player.play();
@@ -222,7 +211,7 @@ function startVisualizer(){
 
     vizInterval = setInterval(()=>{
         bars.forEach(bar=>{
-            bar.style.height = (Math.random()*55+5)+"px";
+            bar.style.height = (Math.random()*70 + 10) + "px";
         });
     },100);
 }
