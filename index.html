@@ -46,11 +46,9 @@ body {
     border-radius: 20px;
     padding: 20px;
 
-    /* 🔥 default glow */
     box-shadow: 0 0 20px rgba(255,0,0,0.4),
                 inset 0 0 20px rgba(255,0,0,0.2);
 
-    /* 🔥 smooth glow animation */
     transition: box-shadow 0.2s ease;
 }
 
@@ -150,13 +148,19 @@ button:hover {
 <button onclick="toggleMute()" id="muteBtn">🔊</button>
 </div>
 
+<!-- PRESETS -->
 <div class="presets">
 <button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv')">BAXTER</button>
+
 <button onclick="setStation('https://s6-webradio.rockantenne.de/rockantenne')">ROCK</button>
+
 <button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal')">METAL</button>
-<button onclick="setStation('http://listen.181fm.com/181-realcountry_128k.mp3')">COUNTRY</button>
+
+<button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3')">COUNTRY</button>
+
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3')">R&B</button>
-<button onclick="setStation('http://listen.181fm.com/181-thebuzz_128k.mp3')">ALT</button>
+
+<button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3')">ALT</button>
 </div>
 
 <div class="volume-container">
@@ -191,7 +195,6 @@ function toggleMute(){
     document.getElementById("muteBtn").classList.toggle("active");
 }
 
-/* 🔥 GLOW FIXED HERE */
 function setVolume(val){
     player.volume = val;
 
@@ -199,7 +202,6 @@ function setVolume(val){
     document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
 
     const radio = document.querySelector(".radio");
-
     radio.style.boxShadow =
         "0 0 " + (val * 60) + "px rgba(255,0,0,0.9), " +
         "inset 0 0 25px rgba(255,0,0,0.4)";
