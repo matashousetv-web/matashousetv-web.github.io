@@ -48,10 +48,15 @@ body {
     transition: box-shadow 0.2s ease;
 }
 
-/* TITLE */
+/* 🔥 STATIC GOLD TITLE */
 .title {
     text-align: center;
     color: gold;
+    font-weight: bold;
+    text-shadow:
+        0 0 5px gold,
+        0 0 15px gold,
+        0 0 30px gold;
 }
 
 /* VISUALIZER */
@@ -184,7 +189,7 @@ function toggleMute(){
     document.getElementById("muteBtn").classList.toggle("active");
 }
 
-/* 🔥 VOLUME WITH DUAL-COLOR FIX */
+/* VOLUME */
 function setVolume(val){
     player.volume = val;
 
@@ -213,11 +218,10 @@ function setStation(url, color){
     applyTheme(color);
 }
 
-/* THEME SYSTEM */
+/* THEME SYSTEM (NO TITLE TOUCHING) */
 function applyTheme(color){
     const radio = document.querySelector(".radio");
     const bars = document.querySelectorAll(".bar");
-    const title = document.querySelector(".title");
 
     if(color === "baxter"){
         radio.style.boxShadow =
@@ -227,10 +231,6 @@ function applyTheme(color){
             bar.style.background = "linear-gradient(to top, blue, gold)";
             bar.style.boxShadow = "0 0 15px gold";
         });
-
-        title.style.background = "linear-gradient(to right, blue, gold)";
-        title.style.webkitBackgroundClip = "text";
-        title.style.webkitTextFillColor = "transparent";
 
         currentColor = "baxter";
         return;
@@ -244,9 +244,6 @@ function applyTheme(color){
         bar.style.boxShadow = "0 0 15px " + color;
     });
 
-    title.style.color = color;
-    title.style.background = "none";
-
     currentColor = color;
 }
 
@@ -254,7 +251,7 @@ function applyTheme(color){
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
 
-/* 🔁 AUTO-RECOVER IF STREAM DROPS */
+/* AUTO-RECOVER */
 player.addEventListener("pause", () => {
     setTimeout(() => {
         if (player.paused) {
