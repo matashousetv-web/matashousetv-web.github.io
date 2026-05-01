@@ -156,25 +156,24 @@ button:hover {
 <script>
 let vizInterval = null;
 let currentColor = "gold";
-let manuallyStopped = false;
+let autoRecoverEnabled = true;
 
 const player = document.getElementById("player");
 
 /* CONTROLS */
 function play(){
-    manuallyStopped = false;
+    autoRecoverEnabled = true;
     player.play();
 }
 
 function pause(){
-    manuallyStopped = false;
     player.pause();
 }
 
 function stop(){
-    manuallyStopped = true;
+    autoRecoverEnabled = false;
     player.pause();
-    player.currentTime = 0;
+    player.src = ""; // 💥 kills stream completely
 }
 
 function toggleMute(){
@@ -205,7 +204,7 @@ function setVolume(val){
 
 /* STATION */
 function setStation(url, color){
-    manuallyStopped = false;
+    autoRecoverEnabled = true;
     player.src = url;
     player.play();
     applyTheme(color);
@@ -244,10 +243,10 @@ function applyTheme(color){
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
 
-/* 🔥 FIXED AUTO-RECOVER */
+/* 🔥 SAFE AUTO-RECOVER */
 player.addEventListener("pause", () => {
     setTimeout(() => {
-        if (player.paused && !manuallyStopped) {
+        if (player.paused && autoRecoverEnabled) {
             player.play().catch(()=>{});
         }
     }, 3000);
