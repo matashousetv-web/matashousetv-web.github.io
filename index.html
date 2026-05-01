@@ -106,15 +106,10 @@ input[type=range] {
 
 <div class="presets">
 <button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter')">BAXTER</button>
-
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red')">ROCK</button>
-
 <button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal','orange')">METAL</button>
-
 <button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green')">COUNTRY</button>
-
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue')">R&B</button>
-
 <button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple')">ALT</button>
 </div>
 
@@ -189,14 +184,28 @@ function applyTheme(color){
     currentColor = color;
 }
 
-/* VISUALIZER */
+/* 🔥 FIXED VISUALIZER */
 let bars = document.querySelectorAll(".bar");
+let vizInterval = null;
 
-setInterval(()=>{
+player.addEventListener("play", () => {
+    if(vizInterval) return;
+
+    vizInterval = setInterval(()=>{
+        bars.forEach(b=>{
+            b.style.height = (Math.random()*60+10)+"px";
+        });
+    },100);
+});
+
+player.addEventListener("pause", () => {
+    clearInterval(vizInterval);
+    vizInterval = null;
+
     bars.forEach(b=>{
-        b.style.height = (Math.random()*60+10)+"px";
+        b.style.height = "10px";
     });
-},100);
+});
 </script>
 
 </body>
