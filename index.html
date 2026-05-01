@@ -13,26 +13,11 @@ body {
         url("https://matashousetv-web.github.io/background.jpg");
     background-size: cover;
     background-position: center;
-
     font-family: Arial;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
-
-/* BOOT */
-#bootScreen {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    color: gold;
-    font-size: 24px;
 }
 
 /* RADIO */
@@ -41,7 +26,7 @@ body {
     background: #000;
     border-radius: 20px;
     padding: 20px;
-    transition: box-shadow 0.4s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 /* TITLE */
@@ -50,34 +35,6 @@ body {
     color: gold;
     font-weight: bold;
     text-shadow: 0 0 15px gold;
-}
-
-/* LIVE */
-.live {
-    text-align: center;
-    color: red;
-    font-size: 12px;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.3; }
-    50% { opacity: 1; }
-    100% { opacity: 0.3; }
-}
-
-/* STATION NAME */
-#stationName {
-    text-align: center;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-/* SIGNAL */
-.signal {
-    text-align: right;
-    font-size: 14px;
-    opacity: 0.6;
 }
 
 /* VISUALIZER */
@@ -94,14 +51,10 @@ body {
     width: 14px;
     height: 10px;
     background: gold;
-    transition: height 0.1s, background 0.4s;
+    transition: height 0.1s, background 0.3s;
 }
 
-/* CONTROLS */
-.controls {
-    text-align: center;
-}
-
+/* BUTTONS */
 button {
     margin: 5px;
     padding: 8px;
@@ -110,10 +63,6 @@ button {
     color: white;
     border: none;
     cursor: pointer;
-}
-
-button:hover {
-    box-shadow: 0 0 10px white;
 }
 
 /* PRESETS */
@@ -125,84 +74,78 @@ button:hover {
 
 .preset.active {
     box-shadow: 0 0 15px gold;
-    border: 1px solid gold;
 }
 
-/* VOLUME */
-.volume-container {
-    text-align: center;
+/* KNOB */
+.knob {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(#333, #000);
+    margin: 15px auto;
+    position: relative;
+    cursor: pointer;
+}
+
+.knob::after {
+    content: '';
+    width: 4px;
+    height: 25px;
+    background: gold;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="bootScreen">BAXTER SYSTEM</div>
-
 <div class="radio">
 
-<div class="signal">▂ ▄ ▆ █</div>
-
 <div class="title">🔥 BAXTER RADIO 🔥</div>
-<div class="live">● LIVE</div>
-<div id="stationName">BAXTER RADIO</div>
 
 <div class="visualizer">
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
 </div>
 
-<div class="controls">
+<div style="text-align:center;">
 <button onclick="play()">▶</button>
 <button onclick="pause()">⏸</button>
 <button onclick="stop()">⏹</button>
 </div>
 
 <div class="presets">
-<button class="preset" onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter',this,'BAXTER')">BAXTER</button>
-
-<button class="preset" onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red',this,'ROCK')">ROCK</button>
-
-<button class="preset" onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal','orange',this,'METAL')">METAL</button>
-
-<button class="preset" onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green',this,'COUNTRY')">COUNTRY</button>
-
-<button class="preset" onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue',this,'R&B')">R&B</button>
-
-<button class="preset" onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple',this,'ALT')">ALT</button>
+<button class="preset" onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter',this)">BAXTER</button>
+<button class="preset" onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red',this)">ROCK</button>
+<button class="preset" onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green',this)">COUNTRY</button>
+<button class="preset" onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue',this)">R&B</button>
+<button class="preset" onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple',this)">ALT</button>
 </div>
 
-<div class="volume-container">
-<input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-</div>
+<div class="knob" id="knob"></div>
 
 <audio id="player" src="http://stream.zeno.fm/cmqbv5vff0hvv"></audio>
 
 </div>
 
 <script>
-let currentColor="gold";
-let vizInterval=null;
-const player=document.getElementById("player");
+let player = document.getElementById("player");
+let currentColor = "gold";
 
 /* CONTROLS */
 function play(){player.play();}
 function pause(){player.pause();}
 function stop(){player.pause();player.currentTime=0;}
 
-/* VOLUME */
-function setVolume(v){
-player.volume=v;
-document.querySelector(".radio").style.boxShadow=
-"0 0 "+(v*60)+"px "+(currentColor==="baxter"?"gold":currentColor);
-}
-
 /* STATION */
-function setStation(url,color,btn,name){
+function setStation(url,color,btn){
 player.src=url;
 player.play();
 applyTheme(color);
-document.getElementById("stationName").innerText=name;
 
 document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));
 btn.classList.add('active');
@@ -214,7 +157,7 @@ const radio=document.querySelector(".radio");
 const bars=document.querySelectorAll(".bar");
 
 if(color==="baxter"){
-radio.style.boxShadow="0 0 40px blue, inset 0 0 25px gold";
+radio.style.boxShadow="0 0 40px blue, 0 0 60px gold";
 bars.forEach(b=>b.style.background="linear-gradient(to top,blue,gold)");
 currentColor="baxter";
 return;
@@ -225,27 +168,49 @@ bars.forEach(b=>b.style.background=color);
 currentColor=color;
 }
 
+/* 🔥 FIXED VOLUME SYSTEM */
+function setVolume(v){
+player.volume=v;
+
+const radio=document.querySelector(".radio");
+
+if(currentColor==="baxter"){
+radio.style.boxShadow=
+"0 0 "+(v*40)+"px blue, "+
+"0 0 "+(v*60)+"px gold";
+return;
+}
+
+radio.style.boxShadow="0 0 "+(v*60)+"px "+currentColor;
+}
+
+/* KNOB CONTROL */
+let knob=document.getElementById("knob");
+
+knob.addEventListener("mousemove",(e)=>{
+if(e.buttons!==1)return;
+
+let rect=knob.getBoundingClientRect();
+let x=e.clientX-rect.left-rect.width/2;
+let y=e.clientY-rect.top-rect.height/2;
+
+let angle=Math.atan2(y,x)*(180/Math.PI);
+let rotation=angle+135;
+
+if(rotation<0)rotation=0;
+if(rotation>270)rotation=270;
+
+knob.style.transform=`rotate(${rotation}deg)`;
+
+let volume=rotation/270;
+setVolume(volume);
+});
+
 /* VISUALIZER */
-player.addEventListener("play",()=>{
-if(vizInterval)return;
-const bars=document.querySelectorAll(".bar");
-vizInterval=setInterval(()=>{
+let bars=document.querySelectorAll(".bar");
+setInterval(()=>{
 bars.forEach(b=>b.style.height=(Math.random()*60+10)+"px");
 },100);
-});
-
-player.addEventListener("pause",()=>{
-clearInterval(vizInterval);
-vizInterval=null;
-});
-
-/* AUTO RESTART */
-player.addEventListener("pause",()=>{
-setTimeout(()=>{if(player.paused)player.play().catch(()=>{});},3000);
-});
-
-/* BOOT */
-setTimeout(()=>{document.getElementById("bootScreen").style.display="none";},2000);
 </script>
 
 </body>
