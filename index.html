@@ -76,27 +76,38 @@ button {
     box-shadow: 0 0 15px gold;
 }
 
-/* KNOB */
+/* 🔥 UPGRADED KNOB */
 .knob {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background: radial-gradient(#333, #000);
-    margin: 15px auto;
+    background: radial-gradient(circle at 30% 30%, #444, #000);
+    margin: 20px auto;
     position: relative;
     cursor: pointer;
+    box-shadow:
+        inset 0 0 15px #000,
+        0 0 10px rgba(255,255,255,0.1);
 }
 
 .knob::after {
     content: '';
     width: 4px;
-    height: 25px;
+    height: 30px;
     background: gold;
     position: absolute;
-    top: 8px;
+    top: 6px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 2px;
+}
+
+.knob::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.1);
 }
 </style>
 </head>
@@ -157,7 +168,7 @@ const radio=document.querySelector(".radio");
 const bars=document.querySelectorAll(".bar");
 
 if(color==="baxter"){
-radio.style.boxShadow="0 0 40px blue, 0 0 60px gold";
+radio.style.boxShadow="0 0 40px blue, 0 0 40px gold";
 bars.forEach(b=>b.style.background="linear-gradient(to top,blue,gold)");
 currentColor="baxter";
 return;
@@ -168,7 +179,7 @@ bars.forEach(b=>b.style.background=color);
 currentColor=color;
 }
 
-/* 🔥 FIXED VOLUME SYSTEM */
+/* 🔥 FIXED VOLUME (BALANCED COLORS) */
 function setVolume(v){
 player.volume=v;
 
@@ -176,8 +187,9 @@ const radio=document.querySelector(".radio");
 
 if(currentColor==="baxter"){
 radio.style.boxShadow=
-"0 0 "+(v*40)+"px blue, "+
-"0 0 "+(v*60)+"px gold";
+"0 0 "+(v*50)+"px rgba(0,120,255,0.9), "+
+"0 0 "+(v*50)+"px rgba(255,215,0,0.9), "+
+"inset 0 0 20px rgba(255,215,0,0.6)";
 return;
 }
 
@@ -186,6 +198,7 @@ radio.style.boxShadow="0 0 "+(v*60)+"px "+currentColor;
 
 /* KNOB CONTROL */
 let knob=document.getElementById("knob");
+knob.style.transition="transform 0.05s linear";
 
 knob.addEventListener("mousemove",(e)=>{
 if(e.buttons!==1)return;
