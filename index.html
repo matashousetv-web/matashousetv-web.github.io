@@ -8,7 +8,7 @@
 <style>
 body {
     margin: 0;
-    background: 
+    background:
         linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
         radial-gradient(circle at center, rgba(255,0,0,0.2), transparent 70%),
         url("https://matashousetv-web.github.io/background.jpg");
@@ -184,7 +184,7 @@ function toggleMute(){
     document.getElementById("muteBtn").classList.toggle("active");
 }
 
-/* VOLUME */
+/* 🔥 VOLUME WITH DUAL-COLOR FIX */
 function setVolume(val){
     player.volume = val;
 
@@ -192,6 +192,14 @@ function setVolume(val){
     document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
 
     const radio = document.querySelector(".radio");
+
+    if(currentColor === "baxter"){
+        radio.style.boxShadow =
+            "0 0 " + (val * 40) + "px blue, " +
+            "0 0 " + (val * 60) + "px gold, " +
+            "inset 0 0 25px gold";
+        return;
+    }
 
     radio.style.boxShadow =
         "0 0 " + (val * 60) + "px " + currentColor +
@@ -224,7 +232,7 @@ function applyTheme(color){
         title.style.webkitBackgroundClip = "text";
         title.style.webkitTextFillColor = "transparent";
 
-        currentColor = "gold";
+        currentColor = "baxter";
         return;
     }
 
@@ -245,6 +253,15 @@ function applyTheme(color){
 /* VISUALIZER */
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
+
+/* 🔁 AUTO-RECOVER IF STREAM DROPS */
+player.addEventListener("pause", () => {
+    setTimeout(() => {
+        if (player.paused) {
+            player.play().catch(()=>{});
+        }
+    }, 3000);
+});
 
 function startVisualizer(){
     if(vizInterval) return;
