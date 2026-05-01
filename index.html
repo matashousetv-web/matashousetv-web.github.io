@@ -10,32 +10,56 @@ body {
     margin: 0;
     background:
         linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        radial-gradient(circle at center, rgba(255,0,0,0.2), transparent 70%),
         url("https://matashousetv-web.github.io/background.jpg");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 
-    font-family: Arial;
+    color: #eee;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.radio {
-    width: 460px;
-    background: #000;
-    border-radius: 20px;
-    padding: 20px;
-    transition: box-shadow 0.3s ease;
+/* BOOT */
+#bootScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    color: gold;
+    font-size: 24px;
 }
 
+/* RADIO */
+.radio {
+    width: 460px;
+    height: 440px;
+    background: radial-gradient(circle at center, #111 0%, #000 80%);
+    border-radius: 20px;
+    padding: 20px;
+    transition: box-shadow 0.2s ease;
+}
+
+/* 🔥 STATIC GOLD TITLE */
 .title {
     text-align: center;
     color: gold;
     font-weight: bold;
-    text-shadow: 0 0 15px gold;
+    text-shadow:
+        0 0 5px gold,
+        0 0 15px gold,
+        0 0 30px gold;
 }
 
+/* VISUALIZER */
 .visualizer {
     display: flex;
     justify-content: center;
@@ -47,34 +71,62 @@ body {
 
 .bar {
     width: 14px;
-    height: 10px;
+    min-height: 10px;
     background: gold;
-    transition: height 0.1s, background 0.3s;
+    border-radius: 4px;
+    box-shadow: 0 0 20px gold;
+}
+
+/* CONTROLS */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 button {
-    margin: 5px;
-    padding: 8px;
-    border-radius: 10px;
     background: #111;
-    color: white;
     border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
-.presets {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 8px;
+button:hover {
+    box-shadow: 0 0 15px white;
 }
 
-input[type=range] {
-    width: 80%;
+#muteBtn.active {
+    box-shadow: 0 0 20px white;
+}
+
+/* PRESETS */
+.presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+}
+
+/* VOLUME */
+.volume-container {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    font-size: 11px;
+    opacity: 0.5;
 }
 </style>
 </head>
 
 <body>
+
+<div id="bootScreen">BAXTER SYSTEM</div>
 
 <div class="radio">
 
@@ -83,98 +135,156 @@ input[type=range] {
 <div class="visualizer">
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+<div class="bar"></div><div class="bar"></div>
 </div>
 
-<div style="text-align:center;">
+<div class="controls">
 <button onclick="play()">▶</button>
 <button onclick="pause()">⏸</button>
 <button onclick="stop()">⏹</button>
+<button onclick="toggleMute()" id="muteBtn">🔊</button>
 </div>
 
+<!-- PRESETS -->
 <div class="presets">
 <button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter')">BAXTER</button>
+
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red')">ROCK</button>
+
+<button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal','orange')">METAL</button>
+
 <button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green')">COUNTRY</button>
+
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue')">R&B</button>
+
 <button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple')">ALT</button>
 </div>
 
-<div style="text-align:center; margin-top:10px;">
+<div class="volume-container">
+<div id="volDisplay">Volume: 100%</div>
 <input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
 </div>
 
-<audio id="player"></audio>
+<audio id="player" src="http://stream.zeno.fm/cmqbv5vff0hvv"></audio>
+
+<div class="footer">Script Daddy Romin 😎</div>
 
 </div>
 
 <script>
-let player = document.getElementById("player");
-let autoRecoverEnabled = true;
 let vizInterval = null;
+let currentColor = "gold";
+const player = document.getElementById("player");
 
 /* CONTROLS */
-function play(){
-    autoRecoverEnabled = true;
-    player.play();
-}
-
-function pause(){
-    player.pause();
-}
-
-/* 💀 HARD STOP (cannot come back) */
+function play(){ player.play(); }
+function pause(){ player.pause(); }
 function stop(){
-    autoRecoverEnabled = false;
-
     player.pause();
-
-    // 🔥 destroy stream completely
-    player.removeAttribute("src");
-    player.load();
+    player.currentTime = 0;
 }
 
-/* STATION */
-function setStation(url){
-    autoRecoverEnabled = true;
-
-    player.src = url;
-    player.load();
-    player.play();
+function toggleMute(){
+    player.muted = !player.muted;
+    document.getElementById("muteBtn").classList.toggle("active");
 }
 
 /* VOLUME */
-function setVolume(v){
-    player.volume = v;
+function setVolume(val){
+    player.volume = val;
+
+    let percent = Math.round(val * 100);
+    document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
+
+    const radio = document.querySelector(".radio");
+
+    if(currentColor === "baxter"){
+        radio.style.boxShadow =
+            "0 0 " + (val * 40) + "px blue, " +
+            "0 0 " + (val * 60) + "px gold, " +
+            "inset 0 0 25px gold";
+        return;
+    }
+
+    radio.style.boxShadow =
+        "0 0 " + (val * 60) + "px " + currentColor +
+        ", inset 0 0 25px " + currentColor;
 }
 
-/* 🔁 SAFE AUTO RECOVER */
-player.addEventListener("pause", () => {
-    if(!autoRecoverEnabled) return;
+/* STATION SWITCH */
+function setStation(url, color){
+    player.src = url;
+    player.play();
+    applyTheme(color);
+}
 
+/* THEME SYSTEM (NO TITLE TOUCHING) */
+function applyTheme(color){
+    const radio = document.querySelector(".radio");
+    const bars = document.querySelectorAll(".bar");
+
+    if(color === "baxter"){
+        radio.style.boxShadow =
+            "0 0 40px blue, inset 0 0 25px gold";
+
+        bars.forEach(bar => {
+            bar.style.background = "linear-gradient(to top, blue, gold)";
+            bar.style.boxShadow = "0 0 15px gold";
+        });
+
+        currentColor = "baxter";
+        return;
+    }
+
+    radio.style.boxShadow =
+        "0 0 40px " + color + ", inset 0 0 20px " + color;
+
+    bars.forEach(bar => {
+        bar.style.background = color;
+        bar.style.boxShadow = "0 0 15px " + color;
+    });
+
+    currentColor = color;
+}
+
+/* VISUALIZER */
+player.addEventListener("play", startVisualizer);
+player.addEventListener("pause", stopVisualizer);
+
+/* AUTO-RECOVER */
+player.addEventListener("pause", () => {
     setTimeout(() => {
-        if(player.paused && autoRecoverEnabled && player.src){
+        if (player.paused) {
             player.play().catch(()=>{});
         }
     }, 3000);
 });
 
-/* VISUALIZER */
-let bars = document.querySelectorAll(".bar");
-
-player.addEventListener("play", () => {
+function startVisualizer(){
     if(vizInterval) return;
 
+    const bars = document.querySelectorAll(".bar");
+
     vizInterval = setInterval(()=>{
-        bars.forEach(b=>{
-            b.style.height = (Math.random()*60+10)+"px";
+        bars.forEach(bar=>{
+            bar.style.height = (Math.random()*70 + 10) + "px";
         });
     },100);
-});
+}
 
-player.addEventListener("pause", () => {
+function stopVisualizer(){
     clearInterval(vizInterval);
     vizInterval = null;
-});
+
+    document.querySelectorAll(".bar").forEach(bar=>{
+        bar.style.height = "10px";
+    });
+}
+
+/* BOOT */
+setTimeout(()=>{
+    document.getElementById("bootScreen").style.display="none";
+},2000);
 </script>
 
 </body>
