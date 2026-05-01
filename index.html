@@ -36,7 +36,6 @@ body {
     text-shadow: 0 0 15px gold;
 }
 
-/* VISUALIZER */
 .visualizer {
     display: flex;
     justify-content: center;
@@ -53,7 +52,6 @@ body {
     transition: height 0.1s, background 0.3s;
 }
 
-/* CONTROLS */
 button {
     margin: 5px;
     padding: 8px;
@@ -64,18 +62,12 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    box-shadow: 0 0 10px white;
-}
-
-/* PRESETS */
 .presets {
     display: grid;
     grid-template-columns: repeat(3,1fr);
     gap: 8px;
 }
 
-/* SLIDER */
 .volume {
     text-align:center;
     margin-top:10px;
@@ -125,12 +117,44 @@ input[type=range] {
 let player = document.getElementById("player");
 let currentColor = "gold";
 
+let bars = document.querySelectorAll(".bar");
+let vizInterval = null;
+
+/* 🔥 VISUALIZER CONTROL */
+function startVisualizer(){
+    if(vizInterval) return;
+
+    vizInterval = setInterval(()=>{
+        bars.forEach(b=>{
+            b.style.height = (Math.random()*60+10)+"px";
+        });
+    },100);
+}
+
+function stopVisualizer(){
+    clearInterval(vizInterval);
+    vizInterval = null;
+
+    bars.forEach(b=>{
+        b.style.height = "10px";
+    });
+}
+
 /* CONTROLS */
-function play(){ player.play(); }
-function pause(){ player.pause(); }
+function play(){
+    player.play();
+    startVisualizer();
+}
+
+function pause(){
+    player.pause();
+    stopVisualizer(); // 🔥 force stop
+}
 
 function stop(){
     player.pause();
+    stopVisualizer(); // 🔥 force stop
+
     player.removeAttribute("src");
     player.load();
 }
@@ -141,6 +165,7 @@ function setStation(url, color){
     player.load();
     player.play();
     applyTheme(color);
+    startVisualizer();
 }
 
 /* VOLUME */
@@ -183,29 +208,6 @@ function applyTheme(color){
 
     currentColor = color;
 }
-
-/* 🔥 FIXED VISUALIZER */
-let bars = document.querySelectorAll(".bar");
-let vizInterval = null;
-
-player.addEventListener("play", () => {
-    if(vizInterval) return;
-
-    vizInterval = setInterval(()=>{
-        bars.forEach(b=>{
-            b.style.height = (Math.random()*60+10)+"px";
-        });
-    },100);
-});
-
-player.addEventListener("pause", () => {
-    clearInterval(vizInterval);
-    vizInterval = null;
-
-    bars.forEach(b=>{
-        b.style.height = "10px";
-    });
-});
 </script>
 
 </body>
