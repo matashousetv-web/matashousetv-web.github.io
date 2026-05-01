@@ -10,31 +10,53 @@ body {
     margin: 0;
     background:
         linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        radial-gradient(circle at center, rgba(255,0,0,0.2), transparent 70%),
         url("https://matashousetv-web.github.io/background.jpg");
     background-size: cover;
     background-position: center;
-    font-family: Arial;
+    background-repeat: no-repeat;
+
+    color: #eee;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
+/* BOOT */
+#bootScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    color: gold;
+    font-size: 24px;
+}
+
 /* RADIO */
 .radio {
     width: 460px;
-    background: #000;
+    height: 440px;
+    background: radial-gradient(circle at center, #111 0%, #000 80%);
     border-radius: 20px;
     padding: 20px;
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.2s ease;
 }
 
-/* TITLE */
+/* 🔥 STATIC GOLD TITLE */
 .title {
     text-align: center;
     color: gold;
     font-weight: bold;
-    text-shadow: 0 0 15px gold;
+    text-shadow:
+        0 0 5px gold,
+        0 0 15px gold,
+        0 0 30px gold;
 }
 
 /* VISUALIZER */
@@ -49,60 +71,62 @@ body {
 
 .bar {
     width: 14px;
-    height: 10px;
+    min-height: 10px;
     background: gold;
-    transition: height 0.1s, background 0.3s;
+    border-radius: 4px;
+    box-shadow: 0 0 20px gold;
 }
 
-/* BUTTONS */
+/* CONTROLS */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
 button {
-    margin: 5px;
-    padding: 8px;
-    border-radius: 10px;
     background: #111;
-    color: white;
     border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
     cursor: pointer;
+}
+
+button:hover {
+    box-shadow: 0 0 15px white;
+}
+
+#muteBtn.active {
+    box-shadow: 0 0 20px white;
 }
 
 /* PRESETS */
 .presets {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-}
-
-.preset.active {
-    box-shadow: 0 0 15px gold;
-}
-
-/* 🎚 SLIDER (clean + modern) */
-.volume-container {
-    text-align: center;
     margin-top: 15px;
 }
 
-input[type=range] {
-    width: 80%;
-    height: 6px;
-    background: #222;
-    border-radius: 5px;
-    outline: none;
+/* VOLUME */
+.volume-container {
+    text-align: center;
+    margin-top: 10px;
 }
 
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    background: gold;
-    border-radius: 50%;
-    box-shadow: 0 0 10px gold;
-    cursor: pointer;
+/* FOOTER */
+.footer {
+    text-align: center;
+    font-size: 11px;
+    opacity: 0.5;
 }
 </style>
 </head>
 
 <body>
+
+<div id="bootScreen">BAXTER SYSTEM</div>
 
 <div class="radio">
 
@@ -111,89 +135,156 @@ input[type=range]::-webkit-slider-thumb {
 <div class="visualizer">
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+<div class="bar"></div><div class="bar"></div>
 </div>
 
-<div style="text-align:center;">
+<div class="controls">
 <button onclick="play()">▶</button>
 <button onclick="pause()">⏸</button>
 <button onclick="stop()">⏹</button>
+<button onclick="toggleMute()" id="muteBtn">🔊</button>
 </div>
 
+<!-- PRESETS -->
 <div class="presets">
-<button class="preset" onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter',this)">BAXTER</button>
-<button class="preset" onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red',this)">ROCK</button>
-<button class="preset" onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green',this)">COUNTRY</button>
-<button class="preset" onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue',this)">R&B</button>
-<button class="preset" onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple',this)">ALT</button>
+<button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter')">BAXTER</button>
+
+<button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red')">ROCK</button>
+
+<button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal','orange')">METAL</button>
+
+<button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green')">COUNTRY</button>
+
+<button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue')">R&B</button>
+
+<button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple')">ALT</button>
 </div>
 
-<!-- 🎚 SLIDER BACK -->
 <div class="volume-container">
+<div id="volDisplay">Volume: 100%</div>
 <input type="range" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
 </div>
 
 <audio id="player" src="http://stream.zeno.fm/cmqbv5vff0hvv"></audio>
 
+<div class="footer">Script Daddy Romin 😎</div>
+
 </div>
 
 <script>
-let player = document.getElementById("player");
+let vizInterval = null;
 let currentColor = "gold";
+const player = document.getElementById("player");
 
 /* CONTROLS */
-function play(){player.play();}
-function pause(){player.pause();}
-function stop(){player.pause();player.currentTime=0;}
-
-/* STATION */
-function setStation(url,color,btn){
-player.src=url;
-player.play();
-applyTheme(color);
-
-document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
+function play(){ player.play(); }
+function pause(){ player.pause(); }
+function stop(){
+    player.pause();
+    player.currentTime = 0;
 }
 
-/* THEME */
+function toggleMute(){
+    player.muted = !player.muted;
+    document.getElementById("muteBtn").classList.toggle("active");
+}
+
+/* VOLUME */
+function setVolume(val){
+    player.volume = val;
+
+    let percent = Math.round(val * 100);
+    document.getElementById("volDisplay").innerText = "Volume: " + percent + "%";
+
+    const radio = document.querySelector(".radio");
+
+    if(currentColor === "baxter"){
+        radio.style.boxShadow =
+            "0 0 " + (val * 40) + "px blue, " +
+            "0 0 " + (val * 60) + "px gold, " +
+            "inset 0 0 25px gold";
+        return;
+    }
+
+    radio.style.boxShadow =
+        "0 0 " + (val * 60) + "px " + currentColor +
+        ", inset 0 0 25px " + currentColor;
+}
+
+/* STATION SWITCH */
+function setStation(url, color){
+    player.src = url;
+    player.play();
+    applyTheme(color);
+}
+
+/* THEME SYSTEM (NO TITLE TOUCHING) */
 function applyTheme(color){
-const radio=document.querySelector(".radio");
-const bars=document.querySelectorAll(".bar");
+    const radio = document.querySelector(".radio");
+    const bars = document.querySelectorAll(".bar");
 
-if(color==="baxter"){
-radio.style.boxShadow="0 0 40px blue, 0 0 40px gold";
-bars.forEach(b=>b.style.background="linear-gradient(to top,blue,gold)");
-currentColor="baxter";
-return;
-}
+    if(color === "baxter"){
+        radio.style.boxShadow =
+            "0 0 40px blue, inset 0 0 25px gold";
 
-radio.style.boxShadow="0 0 40px "+color;
-bars.forEach(b=>b.style.background=color);
-currentColor=color;
-}
+        bars.forEach(bar => {
+            bar.style.background = "linear-gradient(to top, blue, gold)";
+            bar.style.boxShadow = "0 0 15px gold";
+        });
 
-/* 🔥 FIXED VOLUME (DUAL COLOR WORKS) */
-function setVolume(v){
-player.volume=v;
+        currentColor = "baxter";
+        return;
+    }
 
-const radio=document.querySelector(".radio");
+    radio.style.boxShadow =
+        "0 0 40px " + color + ", inset 0 0 20px " + color;
 
-if(currentColor==="baxter"){
-radio.style.boxShadow=
-"0 0 "+(v*50)+"px rgba(0,120,255,0.9), "+
-"0 0 "+(v*50)+"px rgba(255,215,0,0.9), "+
-"inset 0 0 20px rgba(255,215,0,0.6)";
-return;
-}
+    bars.forEach(bar => {
+        bar.style.background = color;
+        bar.style.boxShadow = "0 0 15px " + color;
+    });
 
-radio.style.boxShadow="0 0 "+(v*60)+"px "+currentColor;
+    currentColor = color;
 }
 
 /* VISUALIZER */
-let bars=document.querySelectorAll(".bar");
-setInterval(()=>{
-bars.forEach(b=>b.style.height=(Math.random()*60+10)+"px");
-},100);
+player.addEventListener("play", startVisualizer);
+player.addEventListener("pause", stopVisualizer);
+
+/* AUTO-RECOVER */
+player.addEventListener("pause", () => {
+    setTimeout(() => {
+        if (player.paused) {
+            player.play().catch(()=>{});
+        }
+    }, 3000);
+});
+
+function startVisualizer(){
+    if(vizInterval) return;
+
+    const bars = document.querySelectorAll(".bar");
+
+    vizInterval = setInterval(()=>{
+        bars.forEach(bar=>{
+            bar.style.height = (Math.random()*70 + 10) + "px";
+        });
+    },100);
+}
+
+function stopVisualizer(){
+    clearInterval(vizInterval);
+    vizInterval = null;
+
+    document.querySelectorAll(".bar").forEach(bar=>{
+        bar.style.height = "10px";
+    });
+}
+
+/* BOOT */
+setTimeout(()=>{
+    document.getElementById("bootScreen").style.display="none";
+},2000);
 </script>
 
 </body>
