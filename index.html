@@ -24,7 +24,6 @@ body {
     height: 100vh;
 }
 
-/* BOOT */
 #bootScreen {
     position: fixed;
     width: 100%;
@@ -38,7 +37,6 @@ body {
     font-size: 24px;
 }
 
-/* RADIO */
 .radio {
     width: 460px;
     height: 440px;
@@ -48,7 +46,6 @@ body {
     transition: box-shadow 0.2s ease;
 }
 
-/* 🔥 STATIC GOLD TITLE */
 .title {
     text-align: center;
     color: gold;
@@ -59,7 +56,6 @@ body {
         0 0 30px gold;
 }
 
-/* VISUALIZER */
 .visualizer {
     display: flex;
     justify-content: center;
@@ -77,7 +73,6 @@ body {
     box-shadow: 0 0 20px gold;
 }
 
-/* CONTROLS */
 .controls {
     display: flex;
     justify-content: center;
@@ -97,11 +92,6 @@ button:hover {
     box-shadow: 0 0 15px white;
 }
 
-#muteBtn.active {
-    box-shadow: 0 0 20px white;
-}
-
-/* PRESETS */
 .presets {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -109,13 +99,11 @@ button:hover {
     margin-top: 15px;
 }
 
-/* VOLUME */
 .volume-container {
     text-align: center;
     margin-top: 10px;
 }
 
-/* FOOTER */
 .footer {
     text-align: center;
     font-size: 11px;
@@ -142,21 +130,15 @@ button:hover {
 <button onclick="play()">▶</button>
 <button onclick="pause()">⏸</button>
 <button onclick="stop()">⏹</button>
-<button onclick="toggleMute()" id="muteBtn">🔊</button>
+<button onclick="toggleMute()">🔊</button>
 </div>
 
-<!-- PRESETS -->
 <div class="presets">
 <button onclick="setStation('http://stream.zeno.fm/cmqbv5vff0hvv','baxter')">BAXTER</button>
-
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WIYYFMAAC.aac','red')">ROCK</button>
-
 <button onclick="setStation('http://mp3channels.webradio.rockantenne.de/heavy-metal','orange')">METAL</button>
-
 <button onclick="setStation('https://ais-sa2.cdnstream1.com/1976_128.mp3','green')">COUNTRY</button>
-
 <button onclick="setStation('https://playerservices.streamtheworld.com/api/livestream-redirect/WQHTFM.mp3','blue')">R&B</button>
-
 <button onclick="setStation('https://icecast.radiofrance.fr/fip-midfi.mp3','purple')">ALT</button>
 </div>
 
@@ -174,19 +156,29 @@ button:hover {
 <script>
 let vizInterval = null;
 let currentColor = "gold";
+let manuallyStopped = false;
+
 const player = document.getElementById("player");
 
 /* CONTROLS */
-function play(){ player.play(); }
-function pause(){ player.pause(); }
+function play(){
+    manuallyStopped = false;
+    player.play();
+}
+
+function pause(){
+    manuallyStopped = false;
+    player.pause();
+}
+
 function stop(){
+    manuallyStopped = true;
     player.pause();
     player.currentTime = 0;
 }
 
 function toggleMute(){
     player.muted = !player.muted;
-    document.getElementById("muteBtn").classList.toggle("active");
 }
 
 /* VOLUME */
@@ -211,14 +203,15 @@ function setVolume(val){
         ", inset 0 0 25px " + currentColor;
 }
 
-/* STATION SWITCH */
+/* STATION */
 function setStation(url, color){
+    manuallyStopped = false;
     player.src = url;
     player.play();
     applyTheme(color);
 }
 
-/* THEME SYSTEM (NO TITLE TOUCHING) */
+/* THEME */
 function applyTheme(color){
     const radio = document.querySelector(".radio");
     const bars = document.querySelectorAll(".bar");
@@ -251,10 +244,10 @@ function applyTheme(color){
 player.addEventListener("play", startVisualizer);
 player.addEventListener("pause", stopVisualizer);
 
-/* AUTO-RECOVER */
+/* 🔥 FIXED AUTO-RECOVER */
 player.addEventListener("pause", () => {
     setTimeout(() => {
-        if (player.paused) {
+        if (player.paused && !manuallyStopped) {
             player.play().catch(()=>{});
         }
     }, 3000);
