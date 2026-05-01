@@ -120,7 +120,7 @@ let currentColor = "gold";
 let bars = document.querySelectorAll(".bar");
 let vizInterval = null;
 
-/* 🔥 VISUALIZER CONTROL */
+/* VISUALIZER CONTROL */
 function startVisualizer(){
     if(vizInterval) return;
 
@@ -148,12 +148,12 @@ function play(){
 
 function pause(){
     player.pause();
-    stopVisualizer(); // 🔥 force stop
+    stopVisualizer();
 }
 
 function stop(){
     player.pause();
-    stopVisualizer(); // 🔥 force stop
+    stopVisualizer();
 
     player.removeAttribute("src");
     player.load();
@@ -168,7 +168,7 @@ function setStation(url, color){
     startVisualizer();
 }
 
-/* VOLUME */
+/* 🔥 CLEAN BAXTER COLORS */
 function setVolume(v){
     player.volume = v;
 
@@ -176,8 +176,8 @@ function setVolume(v){
 
     if(currentColor === "baxter"){
         radio.style.boxShadow =
-            "0 0 " + (v*50) + "px rgba(0,120,255,0.9), " +
-            "0 0 " + (v*50) + "px rgba(255,215,0,0.9)";
+            "0 0 " + (v*60) + "px rgba(0,120,255,0.95), " + // 🔵 blue strong
+            "0 0 " + (v*25) + "px rgba(255,215,0,0.9)";    // 🟡 gold accent
         return;
     }
 
@@ -187,13 +187,14 @@ function setVolume(v){
 /* THEMES */
 function applyTheme(color){
     const radio = document.querySelector(".radio");
-    const bars = document.querySelectorAll(".bar");
 
     if(color === "baxter"){
-        radio.style.boxShadow = "0 0 40px blue, 0 0 40px gold";
+        radio.style.boxShadow =
+            "0 0 45px rgba(0,120,255,0.95), " + // 🔵 outer blue
+            "0 0 20px rgba(255,215,0,0.9)";     // 🟡 inner gold
 
         bars.forEach(b=>{
-            b.style.background = "linear-gradient(to top, blue, gold)";
+            b.style.background = "linear-gradient(to top, #0078ff, #ffd700)";
         });
 
         currentColor = "baxter";
